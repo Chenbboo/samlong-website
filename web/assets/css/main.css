@@ -45,3 +45,8 @@ html,body{overflow-x:hidden}.menu-toggle,.mobile-booking-link,.nav-backdrop{disp
   .home-page .booking{padding:66px 18px}.home-page .booking-grid{grid-template-columns:1fr}.home-page .booking form{padding:24px 20px}.booking-visual{min-height:330px;order:-1;background-position:68% center}.booking-visual>b{font-size:36px}
 }
 */
+
+/* Homepage news cards: light text panel. */
+.news-grid article{background:#fff;color:#0b0b0d}
+.news-copy p{color:#555}
+.news-copy h3{color:#0b0b0d}
