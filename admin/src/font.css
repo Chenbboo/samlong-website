@@ -1,0 +1,15 @@
+:root {
+  --font-sans: 'Inter Variable', 'Inter', sans-serif;
+  --el-font-family: var(--font-sans);
+}
+
+html,
+body,
+#app,
+#app *,
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-sans) !important;
+}
