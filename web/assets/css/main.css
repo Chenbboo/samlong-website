@@ -50,3 +50,7 @@ html,body{overflow-x:hidden}.menu-toggle,.mobile-booking-link,.nav-backdrop{disp
 .news-grid article{background:#fff;color:#0b0b0d}
 .news-copy p{color:#555}
 .news-copy h3{color:#0b0b0d}
+
+/* Booking submit button: compact with a green hover state. */
+.booking form>button{width:min(100%,220px);min-height:42px;justify-self:center;padding:11px 22px;transition:background-color .2s ease,box-shadow .2s ease,transform .2s ease}
+.booking form>button:not(:disabled):hover{background:#16a66a;box-shadow:0 8px 20px #16a66a40;transform:translateY(-1px)}
