@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import {onMounted,ref} from 'vue'
 import {ElMessage,ElMessageBox} from 'element-plus'
-import {api,loadCsrf} from '../api.ts'
+import {api} from '../api.ts'
 import {optimizeImage} from '../image.ts'
 const items=ref<any[]>([]);const loading=ref(false);const uploading=ref(false)
 async function load(){loading.value=true;try{items.value=(await api.get('/uploads')).data||[]}finally{loading.value=false}}
-async function upload(options:any){uploading.value=true;try{const optimized=await optimizeImage(options.file);await loadCsrf();const data=new FormData();data.append('file',optimized.file);data.append('thumbnail',optimized.thumbnail);const result=(await api.post('/uploads',data)).data;options.onSuccess(result);ElMessage.success(`上传成功，压缩后 ${(result.size/1024).toFixed(0)} KB`);await load()}catch(error:any){options.onError(error);ElMessage.error(error?.response?.data?.message||error?.message||'图片上传失败')}finally{uploading.value=false}}
+async function upload(options:any){uploading.value=true;try{const optimized=await optimizeImage(options.file);const data=new FormData();data.append('file',optimized.file);data.append('thumbnail',optimized.thumbnail);const result=(await api.post('/uploads',data)).data;options.onSuccess(result);ElMessage.success(`上传成功，压缩后 ${(result.size/1024).toFixed(0)} KB`);await load()}catch(error:any){options.onError(error);ElMessage.error(error?.response?.data?.message||error?.message||'图片上传失败')}finally{uploading.value=false}}
 async function copy(url:string){await navigator.clipboard.writeText(url);ElMessage.success('图片地址已复制')}
-async function remove(item:any){if(item.used){ElMessage.warning('该图片正在被官网内容使用，不能删除');return}await ElMessageBox.confirm('确定删除这张未使用的图片吗？删除后无法恢复。','删除图片',{type:'warning'});await loadCsrf();await api.delete('/uploads/'+encodeURIComponent(item.name));ElMessage.success('图片已删除');await load()}
+async function remove(item:any){if(item.used){ElMessage.warning('该图片正在被官网内容使用，不能删除');return}await ElMessageBox.confirm('确定删除这张未使用的图片吗？删除后无法恢复。','删除图片',{type:'warning'});await api.delete('/uploads/'+encodeURIComponent(item.name));ElMessage.success('图片已删除');await load()}
 const size=(value:number)=>value>=1024*1024?(value/1024/1024).toFixed(2)+' MB':(value/1024).toFixed(0)+' KB'
 const date=(value:string)=>new Date(value).toLocaleString('zh-CN',{hour12:false})
 onMounted(load)

@@ -2,7 +2,7 @@
 import {ref,reactive,onMounted,watch} from 'vue'
 import {ElMessage,ElMessageBox} from 'element-plus'
 import {useRoute} from 'vue-router'
-import {api,loadCsrf} from '../api.ts'
+import {api} from '../api.ts'
 import MediaPicker from '../components/MediaPicker.vue'
 import {optimizeImage} from '../image.ts'
 const props=defineProps<{kind:string,title:string}>();const route=useRoute();const rows=ref<any[]>([]);const dialog=ref(false);const saving=ref(false);const form=ref<any>({});const filters=reactive({keyword:'',status:'',city:'',from:'',to:''});const page=ref(1);const pageSize=ref(10);const total=ref(0)
@@ -30,9 +30,9 @@ function validateForm(){
   if(props.kind==='slides'&&!String(form.value.imageUrl||'').trim())return '请上传轮播图片'
   return ''
 }
-async function save(){const validationMessage=validateForm();if(validationMessage){ElMessage.warning(validationMessage);return}saving.value=true;try{await loadCsrf();if(form.value.id)await api.put(`/${props.kind}/${form.value.id}`,form.value);else await api.post('/'+props.kind,form.value);dialog.value=false;await load();ElMessage.success('保存成功，官网刷新后即可看到')}catch(error:any){const fieldErrors=error?.response?.data?.fieldErrors;const message=fieldErrors?Object.values(fieldErrors)[0]:error?.response?.data?.message;ElMessage.error(String(message||'保存失败，请检查填写内容'))}finally{saving.value=false}}
-async function remove(id:number){await ElMessageBox.confirm('确定删除这条内容吗？','删除确认',{type:'warning'});await loadCsrf();await api.delete(`/${props.kind}/${id}`);await load()}
-async function sendImage(file:File){const optimized=await optimizeImage(file);await loadCsrf();const data=new FormData();data.append('file',optimized.file);data.append('thumbnail',optimized.thumbnail);return(await api.post('/uploads',data)).data.url as string}
+async function save(){const validationMessage=validateForm();if(validationMessage){ElMessage.warning(validationMessage);return}saving.value=true;try{if(form.value.id)await api.put(`/${props.kind}/${form.value.id}`,form.value);else await api.post('/'+props.kind,form.value);dialog.value=false;await load();ElMessage.success('保存成功，官网刷新后即可看到')}catch(error:any){const fieldErrors=error?.response?.data?.fieldErrors;const message=fieldErrors?Object.values(fieldErrors)[0]:error?.response?.data?.message;ElMessage.error(String(message||'保存失败，请检查填写内容'))}finally{saving.value=false}}
+async function remove(id:number){await ElMessageBox.confirm('确定删除这条内容吗？','删除确认',{type:'warning'});await api.delete(`/${props.kind}/${id}`);await load()}
+async function sendImage(file:File){const optimized=await optimizeImage(file);const data=new FormData();data.append('file',optimized.file);data.append('thumbnail',optimized.thumbnail);return(await api.post('/uploads',data)).data.url as string}
 async function uploadMainImage(options:any){try{const url=await sendImage(options.file);form.value.imageUrl=url;if(props.kind==='products'&&!form.value.imageUrls.length)form.value.imageUrls.push(url);options.onSuccess({url});ElMessage.success('主图上传成功')}catch(error){options.onError(error);ElMessage.error('图片上传失败')}}
 async function uploadGalleryImage(options:any){try{const url=await sendImage(options.file);form.value.imageUrls.push(url);if(!form.value.imageUrl)form.value.imageUrl=url;options.onSuccess({url});ElMessage.success('车型图片已添加')}catch(error){options.onError(error);ElMessage.error('图片上传失败')}}
 function selectMainImage(url:string){form.value.imageUrl=url;if(props.kind==='products'&&!form.value.imageUrls.includes(url))form.value.imageUrls.unshift(url)}
