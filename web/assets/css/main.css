@@ -51,17 +51,17 @@ html,body{overflow-x:hidden}.menu-toggle,.mobile-booking-link,.nav-backdrop{disp
 .news-copy p{color:#555}
 .news-copy h3{color:#0b0b0d}
 
-/* Booking submit button: compact with a green hover state. */
+/* Booking submit button: compact with a blue hover state. */
 .booking form>button{width:min(100%,300px);height:48px;min-height:0;align-self:center;justify-self:center;padding:0 28px;transition:background-color .2s ease,box-shadow .2s ease,transform .2s ease}
-.booking form>button:not(:disabled):hover{background:#16a66a;box-shadow:0 8px 20px #16a66a40;transform:translateY(-1px)}
+.booking form>button:not(:disabled):hover{background:#0568d8;box-shadow:0 8px 20px #0878ee40;transform:translateY(-1px)}
 
-/* Shared green hover feedback for homepage calls to action and cards. */
+/* Shared blue hover feedback for homepage calls to action and cards. */
 .test-drive,.hero-copy>a,.feature-card a,.product-body>a,.section-heading>a{transition:background-color .2s ease,border-color .2s ease,color .2s ease,box-shadow .2s ease,transform .2s ease}
 .feature-card,.product-card,.news-card article{transition:box-shadow .25s ease,transform .25s ease}
 .news-copy h3{transition:color .2s ease}
 @media(hover:hover){
-  .test-drive:hover,.hero-copy>a:hover,.feature-card a:hover,.product-body>a:hover{background:#16a66a;border-color:#16a66a;color:#fff;box-shadow:0 8px 20px #16a66a40;transform:translateY(-1px)}
-  .section-heading>a:hover{border-color:#16a66a;color:#16a66a}
-  .feature-card:hover,.product-card:hover,.news-card:hover article{box-shadow:0 12px 28px #16a66a2e;transform:translateY(-4px)}
-  .news-card:hover .news-copy h3{color:#16a66a}
+  .test-drive:hover,.hero-copy>a:hover,.feature-card a:hover,.product-body>a:hover{background:#0568d8;border-color:#0568d8;color:#fff;box-shadow:0 8px 20px #0878ee40;transform:translateY(-1px)}
+  .section-heading>a:hover{border-color:#0568d8;color:#0568d8}
+  .feature-card:hover,.product-card:hover,.news-card:hover article{box-shadow:0 12px 28px #0878ee2e;transform:translateY(-4px)}
+  .news-card:hover .news-copy h3{color:#0568d8}
 }
