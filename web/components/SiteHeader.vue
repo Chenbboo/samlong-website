@@ -1,0 +1,4 @@
+<script setup lang="ts">
+const open=ref(false);const route=useRoute();watch(()=>route.fullPath,()=>open.value=false)
+</script>
+<template><header class="site-header"><NuxtLink class="logo" to="/" @click="open=false"><span>S</span><b>Sam.Loong</b></NuxtLink><button class="menu-toggle" type="button" :aria-expanded="open" aria-controls="site-navigation" aria-label="Mở menu" @click="open=!open"><i/><i/><i/></button><nav id="site-navigation" :class="{open}"><NuxtLink to="/#models">Xe máy điện</NuxtLink><NuxtLink to="/#technology">Công nghệ</NuxtLink><NuxtLink to="/#support">Hỗ trợ & Bảo hành</NuxtLink><NuxtLink to="/news">Tin tức</NuxtLink><NuxtLink to="/#booking">Cửa hàng</NuxtLink><NuxtLink class="mobile-booking-link" to="/#booking">ĐĂNG KÝ LÁI THỬ</NuxtLink></nav><NuxtLink class="test-drive" to="/#booking">ĐĂNG KÝ LÁI THỬ</NuxtLink><button v-if="open" class="nav-backdrop" aria-label="Đóng menu" @click="open=false"/></header></template>

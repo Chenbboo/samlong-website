@@ -1,0 +1,1 @@
+<template><footer id="support"><NuxtLink class="logo" to="/"><span>S</span><b>Sam.Loong</b></NuxtLink><p>Chuyển động xanh cho tương lai Việt Nam.</p><small>© 2026 Sam.Loong. All rights reserved.</small></footer></template>

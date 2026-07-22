@@ -1,0 +1,16 @@
+<script setup lang="ts">
+import {onMounted,ref} from 'vue'
+import {ElMessage,ElMessageBox} from 'element-plus'
+import {api,loadCsrf} from '../api.ts'
+import {optimizeImage} from '../image.ts'
+const items=ref<any[]>([]);const loading=ref(false);const uploading=ref(false)
+async function load(){loading.value=true;try{items.value=(await api.get('/uploads')).data||[]}finally{loading.value=false}}
+async function upload(options:any){uploading.value=true;try{const optimized=await optimizeImage(options.file);await loadCsrf();const data=new FormData();data.append('file',optimized.file);data.append('thumbnail',optimized.thumbnail);const result=(await api.post('/uploads',data)).data;options.onSuccess(result);ElMessage.success(`上传成功，压缩后 ${(result.size/1024).toFixed(0)} KB`);await load()}catch(error:any){options.onError(error);ElMessage.error(error?.response?.data?.message||error?.message||'图片上传失败')}finally{uploading.value=false}}
+async function copy(url:string){await navigator.clipboard.writeText(url);ElMessage.success('图片地址已复制')}
+async function remove(item:any){if(item.used){ElMessage.warning('该图片正在被官网内容使用，不能删除');return}await ElMessageBox.confirm('确定删除这张未使用的图片吗？删除后无法恢复。','删除图片',{type:'warning'});await loadCsrf();await api.delete('/uploads/'+encodeURIComponent(item.name));ElMessage.success('图片已删除');await load()}
+const size=(value:number)=>value>=1024*1024?(value/1024/1024).toFixed(2)+' MB':(value/1024).toFixed(0)+' KB'
+const date=(value:string)=>new Date(value).toLocaleString('zh-CN',{hour12:false})
+onMounted(load)
+</script>
+<template><div class="toolbar"><div><h1 class="page-title">图片素材库</h1><p class="media-tip">新上传图片会自动转换为 WebP，并生成缩略图；正在使用的图片受保护，无法删除。</p></div><el-upload accept="image/jpeg,image/png,image/webp" :show-file-list="false" :http-request="upload"><el-button type="primary" :loading="uploading">上传图片</el-button></el-upload></div><div v-loading="loading" class="media-grid"><article v-for="item in items" :key="item.name"><img :src="item.thumbnailUrl" :alt="item.name"><div class="media-info"><strong :title="item.name">{{item.name}}</strong><span>{{size(item.size)}} · {{date(item.createdAt)}}</span><el-tag :type="item.used?'success':'info'" size="small">{{item.used?'使用中':'未使用'}}</el-tag><div><el-button text type="primary" @click="copy(item.url)">复制地址</el-button><el-button text type="danger" :disabled="item.used" @click="remove(item)">删除</el-button></div></div></article><el-empty v-if="!loading&&!items.length" description="暂无图片素材"/></div></template>
+<style scoped>.media-tip{margin:-14px 0 0;color:#7d8590;font-size:13px}.media-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}.media-grid article{background:#fff;border:1px solid #e7e9ed;border-radius:12px;overflow:hidden}.media-grid article>img{display:block;width:100%;height:155px;object-fit:cover;background:#eef1f5}.media-info{padding:12px}.media-info strong,.media-info span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.media-info strong{font-size:13px}.media-info span{font-size:11px;color:#8a929d;margin:7px 0}.media-info>div{margin-top:7px;display:flex;justify-content:space-between}@media(max-width:1100px){.media-grid{grid-template-columns:repeat(3,1fr)}}@media(max-width:750px){.media-grid{grid-template-columns:repeat(2,1fr)}}</style>

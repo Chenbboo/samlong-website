@@ -1,3 +1,5 @@
+import { HeroCarousel } from "./HeroCarousel";
+
 const products = [
   { name: "F25 SPORT", range: "120 km", power: "1.500 W", speed: "50 km/h" },
   { name: "F25 URBAN", range: "110 km", power: "1.500 W", speed: "48 km/h" },
@@ -47,12 +49,7 @@ export default function Home() {
         </div></details>
       </header>
 
-      <section className="hero" aria-label="F25 Sport launch">
-        <div className="hero-image" role="img" aria-label="Sam.Loong F25 Sport electric scooter in red and white" />
-        <button className="hero-arrow left" aria-label="Previous slide">‹</button>
-        <button className="hero-arrow right" aria-label="Next slide">›</button>
-        <div className="hero-dots" aria-label="Slide 1 of 3"><i /><i /><i /></div>
-      </section>
+      <HeroCarousel />
 
       <section className="featured section" id="models">
         <div className="section-kicker">RA MẮT 2026</div>

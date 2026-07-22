@@ -1,0 +1,40 @@
+name: samlong
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-samlong}
+      MYSQL_USER: ${MYSQL_USER:-samlong}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Set MYSQL_PASSWORD in .env}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in .env}
+      TZ: Asia/Singapore
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    volumes: [mysql_data:/var/lib/mysql]
+    healthcheck: { test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u$${MYSQL_USER}", "-p$${MYSQL_PASSWORD}"], interval: 10s, timeout: 5s, retries: 15 }
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      DB_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE:-samlong}?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Singapore&useSSL=false&allowPublicKeyRetrieval=true
+      DB_USERNAME: ${MYSQL_USER:-samlong}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Set ADMIN_PASSWORD in .env}
+    depends_on: { mysql: { condition: service_healthy } }
+  web:
+    build: ./web
+    restart: unless-stopped
+    environment: { NUXT_PUBLIC_API_BASE: /api }
+    depends_on: [backend]
+  admin:
+    build: ./admin
+    restart: unless-stopped
+    depends_on: [backend]
+  nginx:
+    image: nginx:1.29-alpine
+    restart: unless-stopped
+    ports: ["8088:80"]
+    volumes: ["./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro"]
+    depends_on: [web, admin, backend]
+volumes: { mysql_data: {} }

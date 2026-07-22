@@ -1,0 +1,1 @@
+{"root":["./src/api.ts","./src/image.ts","./src/main.ts","./src/router.ts","./src/app.vue","./src/components/mediapicker.vue","./src/views/auditlogs.vue","./src/views/dashboard.vue","./src/views/login.vue","./src/views/medialibrary.vue","./src/views/resource.vue"],"version":"5.9.3"}
