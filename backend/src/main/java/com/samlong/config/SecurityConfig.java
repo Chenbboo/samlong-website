@@ -41,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     http.cors().and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and().authorizeRequests()
       .antMatchers("/actuator/health", "/api/auth/csrf", "/uploads/**").permitAll()
       .antMatchers(HttpMethod.POST, "/api/bookings").permitAll()
-      .antMatchers(HttpMethod.GET, "/api/products/**", "/api/news/**", "/api/slides/**").permitAll()
+      .antMatchers(HttpMethod.GET, "/api/products/**", "/api/news/**", "/api/slides/**", "/api/footer").permitAll()
       .antMatchers("/api/**").authenticated().anyRequest().permitAll().and()
       .exceptionHandling().authenticationEntryPoint((request,response,exception)->{response.setStatus(401);response.setContentType(MediaType.APPLICATION_JSON_VALUE);response.getWriter().write("{\"error\":\"Unauthorized\"}");}).and()
       .formLogin().loginProcessingUrl("/api/auth/login")
